@@ -1,0 +1,48 @@
+{
+    "theme": {
+        "dark": {
+            "menuBar": {
+                "backgroundColor": "#ff2801",
+                "selectedButton": "#ffffff",
+                "unselectedButton": "#fb917c"
+            },
+            "card": {
+                "backgroundColor": "#1a1a1a",
+                "color": "#ffffff",
+                "defaultColor": "#ffffff",
+                "borderColor": "#ff2801"
+            },
+            "details": {
+                "image": "black",
+                "divColor": "rgba(0, 0, 0, 1)",
+                "color": "white"
+            },
+            "home": {
+                "color": "white",
+                "cardBackground": "#1a1a1a"
+            }
+        },
+        "light": {
+            "menuBar": {
+                "backgroundColor": "#ff2801",
+                "selectedButton": "#ffffff",
+                "unselectedButton": "#fb917c"
+            },
+            "card": {
+                "backgroundColor": "#f2f2f2",
+                "color": "#000000",
+                "defaultColor": "#ff2801",
+                "borderColor": "#ff2801"
+            },
+            "details": {
+                "image": "white",
+                "divColor": "rgba(255, 255, 255, 1)",
+                "color": "black"
+            },
+            "home": {
+                "color": "black",
+                "cardBackground": "#f2f2f2"
+            }
+        }
+    }
+}
