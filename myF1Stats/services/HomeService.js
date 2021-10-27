@@ -1,3 +1,4 @@
+import { Alert } from 'react-native';
 import api from './api';
 
 const GLOBAL = require('../Global');
@@ -47,13 +48,19 @@ export async function getPilots(year, setPilots) {
     }
 }
 
-export function onSelectYear(year, setSelectedYear, setConstructors, setPilots, setYearContent) {
+export function onSelectYear(year, setSelectedYear, setConstructors, setPilots, setYearContent, setNextRace) {
+    setConstructors(undefined);
+    setPilots(undefined);
+    setYearContent(undefined);
+    setNextRace(undefined);
+
     GLOBAL.YEAR = year;
     setSelectedYear(year)
 
     getConstructors(year, setConstructors);
     getPilots(year, setPilots);
     getYearContent(year, setYearContent);
+    getNextRace(setNextRace);
 }
 
 export function getYears(setYears) {
@@ -63,6 +70,29 @@ export function getYears(setYears) {
         yearsArray.push(i);
     }
     setYears(yearsArray);
+}
+
+export async function getNextRace(setNextRace) {
+    try {
+        let response = await api.get('current/last/results.json');
+        let nextRound = (response.data.MRData.RaceTable.Races[0].round - 1) + 2;
+        let currentSeason = response.data.MRData.RaceTable.Races[0].season;
+        let nextRace = undefined;
+
+        if (currentSeason == GLOBAL.YEAR) {
+            response = await api.get(GLOBAL.YEAR + '.json');
+            response.data.MRData.RaceTable.Races.map((circuit, key) => {
+                if (circuit.round == nextRound) {
+                    nextRace = circuit;
+                }
+            });
+        }
+
+        setNextRace(nextRace === undefined ? 'FINISHED_SEASON' : nextRace);
+    }
+    catch (e) {
+        error(e);
+    }
 }
 
 export function error(e) {

@@ -1,9 +1,26 @@
 import { ScrollView, View, StyleSheet, Image, Text } from "react-native";
 import React, { useState, useEffect } from 'react';
+import Assets from "../assets/AssetsService";
 import Loading from "../components/Loading";
 import api from "../services/api";
+import ContentCard from "../components/ContentCard";
 
 const GLOBAL = require('../Global');
+
+const months = {
+  '01': 'Jan',
+  '02': 'Feb',
+  '03': 'Mar',
+  '04': 'Apr',
+  '05': 'May',
+  '06': 'Jun',
+  '07': 'Jul',
+  '08': 'Aug',
+  '09': 'Sep',
+  '10': 'Oct',
+  '11': 'Nov',
+  '12': 'Dec'
+};
 
 export default function PilotDetails(props) {
   const [pilotImage, setPilotImage] = useState();
@@ -51,18 +68,6 @@ export default function PilotDetails(props) {
     console.error(e.response ? e.response.data.message : e.message);
   }
 
-  async function getPilots() {
-    try {
-      setLoading(true);
-      let response = await api.get(GLOBAL.YEAR + '/driverStandings.json');
-      setPilots(response.data.MRData.StandingsTable.StandingsLists[0].DriverStandings);
-      setLoading(false);
-    }
-    catch (e) {
-      error(e);
-    }
-  }
-
   function onDetails(pilot) {
     setLoading(true);
     props.onDetails('PILOTDETAILS', pilot);
@@ -79,31 +84,34 @@ export default function PilotDetails(props) {
         {
           pilot && <View>
             <Image style={styles.pilotImage} source={{ uri: pilotImage }} />
-            <Text style={styles.pilotCode}>{pilot.Driver.code}</Text>
+            <Text style={styles.pilotCode}>{pilot.Driver.permanentNumber}</Text>
             <Text style={styles['pilotName' + GLOBAL.MAIN_THEME]}>{pilot.Driver.givenName + ' ' + pilot.Driver.familyName}</Text>
             <Text style={styles['pilotConstructorName' + GLOBAL.MAIN_THEME]}>{pilot.Constructors[0].name}</Text>
-            
+
             <Text style={styles['year' + GLOBAL.MAIN_THEME]}>{GLOBAL.YEAR}</Text>
             <View style={styles.pilotInformations}>
               <View style={styles['pilotInformationCard' + GLOBAL.MAIN_THEME]}>
-                <Image style={styles.cardTinyLogo} source={require('../assets/icons/speedometer.png')} />
+                <Image style={styles.cardTinyLogo} source={Assets.icon.points[GLOBAL.MAIN_THEME]} />
                 <Text style={styles['pilotInformationCardTitle' + GLOBAL.MAIN_THEME]}>Points</Text>
                 <Text style={styles['pilotInformationCardInformation' + GLOBAL.MAIN_THEME]}>{pilot.points}</Text>
               </View>
               <View style={styles['pilotInformationCard' + GLOBAL.MAIN_THEME]}>
-                <Image style={styles.cardTinyLogo} source={require('../assets/icons/podium.png')} />
+                <Image style={styles.cardTinyLogo} source={Assets.icon.podium[GLOBAL.MAIN_THEME]} />
                 <Text style={styles['pilotInformationCardTitle' + GLOBAL.MAIN_THEME]}>Position</Text>
                 <Text style={styles['pilotInformationCardInformation' + GLOBAL.MAIN_THEME]}>{pilot.position}º</Text>
               </View>
               <View style={styles['pilotInformationCard' + GLOBAL.MAIN_THEME]}>
-                <Image style={styles.cardTinyLogo} source={require('../assets/icons/champagne.png')} />
+                <Image style={styles.cardTinyLogo} source={Assets.icon.wins[GLOBAL.MAIN_THEME]} />
                 <Text style={styles['pilotInformationCardTitle' + GLOBAL.MAIN_THEME]}>Wins</Text>
                 <Text style={styles['pilotInformationCardInformation' + GLOBAL.MAIN_THEME]}>{pilot.wins}</Text>
               </View>
             </View>
-            <View>
-              <Text style={styles['content' + GLOBAL.MAIN_THEME]}>{pilotContent && pilotContent}</Text>
-            </View>
+            
+            <ContentCard isCollapse={false} title={pilot.Driver.nationality + ' born in ' + months[pilot.Driver.dateOfBirth.split('-')[1]] + ' ' + pilot.Driver.dateOfBirth.split('-')[2] + ' ' + pilot.Driver.dateOfBirth.split('-')[0]}/>
+
+            {
+              pilotContent && <ContentCard isCollapse={true} title={'About'} content={pilotContent}/>
+            }
           </View>
         }
       </ScrollView >
@@ -114,18 +122,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  contentDark: {
-    marginTop: 20,
-    textAlign: 'justify',
-    color: 'white',
-    padding: 15
-  },
-  contentLight: {
-    marginTop: 20,
-    textAlign: 'justify',
-    color: 'black',
-    padding: 15
-  },
   pilotImage: {
     width: '100%',
     height: 400,
@@ -135,42 +131,43 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: 'space-between',
-    padding: 15
+    margin: 10,
   },
   yearLight: {
     color: 'black',
     textAlign: 'center',
+    margin: 10,
   },
   yearDark: {
     color: 'white',
     textAlign: 'center',
+    margin: 10,
   },
   pilotNameLight: {
     color: 'black',
-    paddingLeft: 15,
+    paddingLeft: 10,
     paddingTop: 0,
     fontSize: 30
   },
   pilotNameDark: {
     color: 'white',
-    paddingLeft: 15,
+    paddingLeft: 10,
     paddingTop: 0,
     fontSize: 30
   },
   pilotConstructorNameLight: {
     color: 'black',
-    paddingLeft: 15,
+    paddingLeft: 10,
     paddingBottom: 20,
     fontSize: 15
   },
   pilotConstructorNameDark: {
     color: 'white',
-    paddingLeft: 15,
+    paddingLeft: 10,
     paddingBottom: 20,
     fontSize: 15
   },
   pilotInformationCardDark: {
-    backgroundColor: 'red',
     borderRadius: 10,
     padding: 15,
     height: 150,
@@ -178,7 +175,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1a1a'
   },
   pilotInformationCardLight: {
-    backgroundColor: 'red',
     borderRadius: 10,
     padding: 15,
     height: 150,
@@ -194,7 +190,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 15,
     marginTop: 30
-  },  
+  },
   cardTinyLogo: {
     width: 40,
     height: 40

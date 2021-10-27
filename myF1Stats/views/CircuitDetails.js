@@ -1,7 +1,9 @@
 import { ScrollView, View, StyleSheet, Image, Text } from "react-native";
 import React, { useState, useEffect } from 'react';
+import Assets from "../assets/AssetsService";
 import Loading from "../components/Loading";
 import api from "../services/api";
+import ContentCard from "../components/ContentCard";
 
 const GLOBAL = require('../Global');
 
@@ -14,9 +16,9 @@ export default function CircuitDetails(props) {
 
   useEffect(() => {
     setCircuit(props.data);
+    getCircuitImage();
+    getWinner(GLOBAL.YEAR, props.data.round)
     if (props.data.isRaceAlreadyHappened) {
-      getCircuitImage();
-      getWinner(GLOBAL.YEAR, props.data.round)
     }
     getCircuitContent();
   }, [])
@@ -89,34 +91,35 @@ export default function CircuitDetails(props) {
           circuit && <View>
             <Text style={styles['constructorName' + GLOBAL.MAIN_THEME]}>{circuit.raceName}</Text>
             <Text style={styles['constructorNationality' + GLOBAL.MAIN_THEME]}>{circuit.Circuit.Location.country}</Text>
-            <Text style={styles['year' + GLOBAL.MAIN_THEME]}>{GLOBAL.YEAR}</Text>
-            {
-              circuitWinner && <View style={styles.constructorInformations}>
-                <View style={styles['constructorInformationCard' + GLOBAL.MAIN_THEME]}>
-                  <Image style={styles.cardTinyLogo} source={require('../assets/icons/speedometer.png')} />
-                  <Text style={styles['constructornformationCardTitle' + GLOBAL.MAIN_THEME]}>Laps</Text>
-                  <Text style={styles['constructorInformationCardInformation' + GLOBAL.MAIN_THEME]}>{circuitWinner.laps}</Text>
-                </View>
-                <View style={styles['constructorInformationCard' + GLOBAL.MAIN_THEME]}>
-                  <Image style={styles.cardTinyLogo} source={require('../assets/icons/podium.png')} />
-                  <Text style={styles['constructornformationCardTitle' + GLOBAL.MAIN_THEME]}>Time</Text>
-                  <Text style={styles['constructorInformationCardInformation' + GLOBAL.MAIN_THEME]}>{circuitWinner.Time.time}º</Text>
-                </View>
-                <View style={styles['constructorInformationCard' + GLOBAL.MAIN_THEME]}>
-                  <Image style={styles.cardTinyLogo} source={require('../assets/icons/champagne.png')} />
-                  <Text style={styles['constructornformationCardTitle' + GLOBAL.MAIN_THEME]}>Winner</Text>
-                  <Text style={styles['constructorInformationCardInformation' + GLOBAL.MAIN_THEME]}>{circuitWinner.Driver.givenName + ' ' + circuitWinner.Driver.familyName}</Text>
-                </View>
-              </View>
-            }
-            <View>
-              <Text style={styles['content' + GLOBAL.MAIN_THEME]}>{circuitContent && circuitContent}</Text>
-            </View>
             <View>
               {
                 circuitImage && circuitImage !== "" && <Image style={styles.constructorImage} source={{ uri: circuitImage }} />
               }
             </View>
+            <Text style={styles['year' + GLOBAL.MAIN_THEME]}>{GLOBAL.YEAR}</Text>
+            {
+              circuitWinner && <View style={styles.constructorInformations}>
+                <View style={styles['constructorInformationCard' + GLOBAL.MAIN_THEME]}>
+                  <Image style={styles.cardTinyLogo} source={Assets.icon.points[GLOBAL.MAIN_THEME]} />
+                  <Text style={styles['constructornformationCardTitle' + GLOBAL.MAIN_THEME]}>Laps</Text>
+                  <Text style={styles['constructorInformationCardInformation' + GLOBAL.MAIN_THEME]}>{circuitWinner.laps}</Text>
+                </View>
+                <View style={styles['constructorInformationCard' + GLOBAL.MAIN_THEME]}>
+                  <Image style={styles.cardTinyLogo} source={Assets.icon.clock[GLOBAL.MAIN_THEME]} />
+                  <Text style={styles['constructornformationCardTitle' + GLOBAL.MAIN_THEME]}>Time</Text>
+                  <Text style={styles['constructorInformationCardInformation' + GLOBAL.MAIN_THEME]}>{circuitWinner.Time.time}º</Text>
+                </View>
+                <View style={styles['constructorInformationCard' + GLOBAL.MAIN_THEME]}>
+                  <Image style={styles.cardTinyLogo} source={Assets.icon.wins[GLOBAL.MAIN_THEME]} />
+                  <Text style={styles['constructornformationCardTitle' + GLOBAL.MAIN_THEME]}>Winner</Text>
+                  <Text style={styles['constructorInformationCardInformation' + GLOBAL.MAIN_THEME]}>{circuitWinner.Driver.givenName + ' ' + circuitWinner.Driver.familyName}</Text>
+                </View>
+              </View>
+            }
+
+            {
+              circuitContent && <ContentCard isCollapse={true} title={'About'} content={circuitContent} />
+            }
           </View>
         }
       </ScrollView >

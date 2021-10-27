@@ -55,7 +55,6 @@ export default function Constructors(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 15
+    flex: 1
   }
 });

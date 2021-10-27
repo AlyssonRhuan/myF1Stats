@@ -1,7 +1,9 @@
-import { ScrollView, View, StyleSheet, Image, Text, Alert  } from "react-native";
+import { ScrollView, View, StyleSheet, Image, Text } from "react-native";
 import React, { useState, useEffect } from 'react';
+import Assets from "../assets/AssetsService";
 import Loading from "../components/Loading";
 import api from "../services/api";
+import ContentCard from "../components/ContentCard";
 
 const GLOBAL = require('../Global');
 
@@ -23,7 +25,7 @@ export default function ConstructorDetails(props) {
       setLoading(true);
 
       let urlSplit = props.data.Constructor.url.split('/');
-      
+
       const url = 'https://en.wikipedia.org/w/api.php?format=json&action=parse&origin=*&prop=text&page=' + urlSplit[urlSplit.length - 1];
       let response = await api.get(url);
 
@@ -33,7 +35,6 @@ export default function ConstructorDetails(props) {
 
       let constructorLogoImage = "";
       let images = [];
-      Alert.alert("Alert debug", imgTags.length + "")
       imgTags && imgTags.map(imgTag => {
         if (!imgTag.toUpperCase().includes('FLAG')) {
           if (imgTag.toUpperCase().includes('LOGO') && constructorLogoImage === "") {
@@ -88,24 +89,26 @@ export default function ConstructorDetails(props) {
             <Text style={styles['year' + GLOBAL.MAIN_THEME]}>{GLOBAL.YEAR}</Text>
             <View style={styles.constructorInformations}>
               <View style={styles['constructorInformationCard' + GLOBAL.MAIN_THEME]}>
-                <Image style={styles.cardTinyLogo} source={require('../assets/icons/speedometer.png')} />
+                <Image style={styles.cardTinyLogo} source={Assets.icon.points[GLOBAL.MAIN_THEME]} />
                 <Text style={styles['constructornformationCardTitle' + GLOBAL.MAIN_THEME]}>Points</Text>
                 <Text style={styles['constructorInformationCardInformation' + GLOBAL.MAIN_THEME]}>{constructor.points}</Text>
               </View>
               <View style={styles['constructorInformationCard' + GLOBAL.MAIN_THEME]}>
-                <Image style={styles.cardTinyLogo} source={require('../assets/icons/podium.png')} />
+                <Image style={styles.cardTinyLogo} source={Assets.icon.podium[GLOBAL.MAIN_THEME]} />
                 <Text style={styles['constructornformationCardTitle' + GLOBAL.MAIN_THEME]}>Position</Text>
                 <Text style={styles['constructorInformationCardInformation' + GLOBAL.MAIN_THEME]}>{constructor.position}º</Text>
               </View>
               <View style={styles['constructorInformationCard' + GLOBAL.MAIN_THEME]}>
-                <Image style={styles.cardTinyLogo} source={require('../assets/icons/champagne.png')} />
+                <Image style={styles.cardTinyLogo} source={Assets.icon.wins[GLOBAL.MAIN_THEME]} />
                 <Text style={styles['constructornformationCardTitle' + GLOBAL.MAIN_THEME]}>Wins</Text>
                 <Text style={styles['constructorInformationCardInformation' + GLOBAL.MAIN_THEME]}>{constructor.wins}</Text>
               </View>
             </View>
-            <View>
-              <Text style={styles['content' + GLOBAL.MAIN_THEME]}>{constructorContent && constructorContent}</Text>
-            </View>
+
+            {
+              constructorContent && <ContentCard isCollapse={true} title={'About'} content={constructorContent} />
+            }
+
             <View>
               {
                 constructorImage && constructorImage.map((image, key) => <Image key={key} style={styles.constructorImage} source={{ uri: image }} />)
@@ -120,18 +123,6 @@ export default function ConstructorDetails(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1
-  },
-  contentDark: {
-    marginTop: 20,
-    textAlign: 'justify',
-    color: 'white',
-    padding: 15
-  },
-  contentLight: {
-    marginTop: 20,
-    textAlign: 'justify',
-    color: 'black',
-    padding: 15
   },
   constructorLogo: {
     width: '90%',
@@ -148,7 +139,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: 'space-between',
-    padding: 15
+    margin: 10,
   },
   yearLight: {
     color: 'black',
@@ -160,19 +151,19 @@ const styles = StyleSheet.create({
   },
   constructorNameLight: {
     color: 'black',
-    paddingLeft: 15,
+    paddingLeft: 10,
     paddingTop: 0,
     fontSize: 30
   },
   constructorNameDark: {
     color: 'white',
-    paddingLeft: 15,
+    paddingLeft: 10,
     paddingTop: 0,
     fontSize: 30
   },
   constructorNationalityLight: {
     color: 'black',
-    paddingLeft: 15,
+    paddingLeft: 10,
     paddingBottom: 20,
     fontSize: 15
   },

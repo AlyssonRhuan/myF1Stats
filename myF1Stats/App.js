@@ -1,24 +1,35 @@
-import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native';
-import appConfiguration from './data/appconfiguration.json';
+import { StyleSheet, View, Image, Text, TouchableOpacity, Alert } from 'react-native';
 import ConstructorDetails from './views/ConstructorDetails';
+import CircuitDetails from './views/CircuitDetails';
 import React, { useState, useEffect } from 'react';
 import PilotDetails from "./views/PilotDetails";
 import Constructors from "./views/Constructors";
+import Assets from './assets/AssetsService';
 import Circuits from "./views/Circuits";
 import Pilots from "./views/Pilots";
+import About from './views/About';
 import Home from './views/Home';
-import CircuitDetails from './views/CircuitDetails';
 
 const GLOBAL = require('./Global');
 
+const PAGE_TITLE = {
+  "HOME": "My F1 Stats",
+  "PILOTS": "Pilots",
+  "CONSTRUCTORS": "Constructors",
+  "CIRCUITS": "Circuits",
+  "PILOTDETAILS": "Details",
+  "CONSTRUCTORDETAILS": "Details",
+  "CIRCUITDETAILS": "Details",
+  "ABOUT": "About",
+}
+
 export default function App() {
-  const [themeChecked, setThemeChecked] = useState(GLOBAL.MAIN_THEME);
   const [dataDetails, setDataDetails] = useState();
   const [view, setView] = useState('HOME');
 
   useEffect(() => {
 
-  }, [GLOBAL.MAIN_THEME])
+  }, [])
 
   function setActiveView(viewId) {
     setView(viewId);
@@ -29,26 +40,19 @@ export default function App() {
     setView(viewId);
   }
 
-  function onCheckTheme(theme, setThemeChecked) {
-    GLOBAL.MAIN_THEME = theme;
-    setThemeChecked(theme);
-  }
-
   return (
     <View style={styles["container" + GLOBAL.MAIN_THEME]}>
       <View style={styles.body}>
-        
+
         <View style={styles.header}>
-          <View style={styles.logo}>
-            <Image style={styles.tinyLogo} source={require('./assets/icons/scoreboard.png')} />
-            <Text style={styles["logoTitle" + GLOBAL.MAIN_THEME]}>MY F1 STATS</Text>
-          </View>
-          <TouchableOpacity onPress={() => onCheckTheme((themeChecked == 'Light' ? 'Dark' : 'Light'), setThemeChecked)}>
-            {
-              GLOBAL.MAIN_THEME == 'Light'
-                ? <Image style={styles.tinyLogo} source={require('./assets/icons/Dark.png')} />
-                : <Image style={styles.tinyLogo} source={require('./assets/icons/Light.png')} />
-            }
+          <TouchableOpacity onPress={() => setActiveView('HOME')}>
+            <View style={styles.logo}>
+              <Image style={styles.tinyLogo} source={Assets.icon.logo[GLOBAL.MAIN_THEME]} />
+            </View>
+          </TouchableOpacity>
+          <Text style={styles["logoTitle" + GLOBAL.MAIN_THEME]}>{PAGE_TITLE[view]}</Text>
+          <TouchableOpacity onPress={() => setView('ABOUT')}>
+            <Image style={styles.tinyLogo} source={Assets.icon.settings[GLOBAL.MAIN_THEME]} />
           </TouchableOpacity>
         </View>
 
@@ -63,20 +67,26 @@ export default function App() {
         {view == 'CIRCUITS' && <Circuits onDetails={onDetails} />}
         {view == 'CIRCUITDETAILS' && <CircuitDetails data={dataDetails} />}
 
+        {view == 'ABOUT' && <About onDetails={onDetails} />}
+
 
       </View>
       <View style={styles['menuBar' + GLOBAL.MAIN_THEME]}>
-        <TouchableOpacity onPress={() => setActiveView('HOME')}>
-          <Image style={styles.tinyLogo} source={require('./assets/icons/start.png')} />
+        <TouchableOpacity onPress={() => setActiveView('HOME')} style={styles.menuBarButton}>
+          <Image style={styles.tinyLogoBar} source={Assets.icon.home[GLOBAL.MAIN_THEME]} />
+          <Text style={styles['text' + GLOBAL.MAIN_THEME]}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setActiveView('PILOTS')}>
-          <Image style={styles.tinyLogo} source={require('./assets/icons/steering-wheel.png')} />
+        <TouchableOpacity onPress={() => setActiveView('PILOTS')} style={styles.menuBarButton}>
+          <Image style={styles.tinyLogoBar} source={Assets.icon.pilots[GLOBAL.MAIN_THEME]} />
+          <Text style={styles['text' + GLOBAL.MAIN_THEME]}>Pilots</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setActiveView('CONSTRUCTORS')}>
-          <Image style={styles.tinyLogo} source={require('./assets/icons/car.png')} />
+        <TouchableOpacity onPress={() => setActiveView('CONSTRUCTORS')} style={styles.menuBarButton}>
+          <Image style={styles.tinyLogoBar} source={Assets.icon.constructors[GLOBAL.MAIN_THEME]} />
+          <Text style={styles['text' + GLOBAL.MAIN_THEME]}>Teams</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setActiveView('CIRCUITS')}>
-          <Image style={styles.tinyLogo} source={require('./assets/icons/race.png')} />
+        <TouchableOpacity onPress={() => setActiveView('CIRCUITS')} style={styles.menuBarButton}>
+          <Image style={styles.tinyLogoBar} source={Assets.icon.circuit[GLOBAL.MAIN_THEME]} />
+          <Text style={styles['text' + GLOBAL.MAIN_THEME]}>Circuits</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -98,11 +108,15 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
     fontFamily: 'Formula1 Display Regular',
-    backgroundColor: "#000"
+    backgroundColor: "#262626"
   },
   tinyLogo: {
     width: 40,
     height: 40,
+  },
+  tinyLogoBar: {
+    width: 30,
+    height: 30,
   },
   body: {
     flex: 0.92,
@@ -132,7 +146,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 15
+    paddingTop: 5
   },
   menuBarDark: {
     flex: 0.08,
@@ -142,7 +156,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 15
+    paddingTop: 5
   },
   header: {
     flex: 0.08,
@@ -159,5 +173,17 @@ const styles = StyleSheet.create({
     height: 20,
     resizeMode: 'contain',
     marginLeft: -240
+  },
+  menuBarButton: {
+    justifyContent: 'center', //Centered horizontally
+    alignItems: 'center', //Centered vertically
+  },
+  textDark: {
+    textAlign: 'center',
+    color: 'white'
+  },
+  textLight: {
+    textAlign: 'center',
+    color: 'black'
   },
 });

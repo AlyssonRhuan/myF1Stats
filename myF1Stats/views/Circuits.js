@@ -61,11 +61,11 @@ export default function Circuits(props) {
   }
 
   function isNextRace(circuitRound) {
-    return (circuitRound - 1) == lastRaceRound
+    return GLOBAL.YEAR == new Date().getFullYear() && (circuitRound - 1) == lastRaceRound
   }
 
   function isLastRound(circuitRound) {
-    return circuitRound == lastRaceRound
+    return GLOBAL.YEAR == new Date().getFullYear() && circuitRound == lastRaceRound
   }
 
   return (
@@ -89,8 +89,7 @@ export default function Circuits(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 15
+    flex: 1
   },
   tinyLogo: {
     width: 40,

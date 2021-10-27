@@ -32,7 +32,7 @@ const styles = (props) => StyleSheet.create({
     borderBottomColor: constructorsColor[props.pilot.Constructors[0].constructorId] || '#ff2801',
     borderRightColor: constructorsColor[props.pilot.Constructors[0].constructorId] || '#ff2801',
     padding: 15,
-    marginBottom: 20,
+    margin: 10,
     borderRadius: 10,
     minHeight: 100
   },
@@ -44,7 +44,7 @@ const styles = (props) => StyleSheet.create({
     borderBottomColor: constructorsColor[props.pilot.Constructors[0].constructorId] || '#ff2801',
     borderRightColor: constructorsColor[props.pilot.Constructors[0].constructorId] || '#ff2801',
     padding: 15,
-    marginBottom: 20,
+    margin: 10,
     borderRadius: 10,
     minHeight: 100
   },

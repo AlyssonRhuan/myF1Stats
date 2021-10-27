@@ -6,17 +6,17 @@ const GLOBAL = require('../Global');
 
 const months = {
   '01': 'Jan',
-  '02': 'Fev',
+  '02': 'Feb',
   '03': 'Mar',
-  '04': 'Abr',
-  '05': 'Mai',
+  '04': 'Apr',
+  '05': 'May',
   '06': 'Jun',
   '07': 'Jul',
-  '08': 'Ago',
-  '09': 'Set',
-  '10': 'Out',
+  '08': 'Aug',
+  '09': 'Sep',
+  '10': 'Oct',
   '11': 'Nov',
-  '12': 'Dez'
+  '12': 'Dec'
 };
 
 export default function CircuitCard(props) {
@@ -26,23 +26,23 @@ export default function CircuitCard(props) {
   }, [GLOBAL.MAIN_THEME])
 
   return (
-    <View style={styles(props)['container' + GLOBAL.MAIN_THEME]}>
+    <View style={props.isHome ? styles['containerHome' + GLOBAL.MAIN_THEME] : styles['container' + GLOBAL.MAIN_THEME]}>
 
-      <View style={styles(props).inlineText}>
-        <Text style={styles(props)['text' + GLOBAL.MAIN_THEME]}>{months[props.circuit.date.split('-')[1]] + ' ' + props.circuit.date.split('-')[2]}</Text>
-        {props.isNextRace && <Text style={styles(props).textLastRace}>NEXT RACE</Text>}
-        {props.isLastRace && <Text style={styles(props).textNextRace}>LAST RACE</Text>}
+      <View style={styles.inlineText}>
+        <Text style={styles['text' + GLOBAL.MAIN_THEME]}>{months[props.circuit.date.split('-')[1]] + ' ' + props.circuit.date.split('-')[2] + ' ' + props.circuit.date.split('-')[0]}</Text>
+        {props.isNextRace && <Text style={styles['text' + GLOBAL.MAIN_THEME]}> ({props.circuit.time})</Text>}
+        {props.isNextRace && <Text style={styles.textLastRace}>NEXT RACE</Text>}
+        {props.isLastRace && <Text style={styles.textNextRace}>LAST RACE</Text>}
       </View>
 
-      <Text style={styles(props)['title' + GLOBAL.MAIN_THEME]}>{props.circuit.Circuit.Location.country + ' ' + props.circuit.date.split('-')[0]}</Text>
-      <Text style={styles(props)['text' + GLOBAL.MAIN_THEME]}>{props.circuit.Circuit.circuitName}</Text>
-      <Image style={styles(props).flag} source={{ uri: 'https://www.countryflags.io/' + coutries[props.circuit.Circuit.Location.country] + '/flat/64.png' }} />
-      <View style={styles(props)['triangleCornerTopRight' + GLOBAL.MAIN_THEME]} />
+      <Text style={styles['title' + GLOBAL.MAIN_THEME]}>{props.circuit.Circuit.Location.country}</Text>
+      <Text style={styles['text' + GLOBAL.MAIN_THEME]}>{props.circuit.Circuit.circuitName}</Text>
+      <Image style={styles.flag} source={{ uri: 'https://www.worldometers.info/img/flags/' + coutries[props.circuit.Circuit.Location.country] + '-flag.gif' }} />
     </View >
   );
 }
 
-const styles = (props) => StyleSheet.create({
+const styles = StyleSheet.create({
   containerLight: {
     flex: 1,
     backgroundColor: '#f2f2f2',
@@ -51,9 +51,9 @@ const styles = (props) => StyleSheet.create({
     borderBottomColor: '#ff2801',
     borderRightColor: '#ff2801',
     padding: 15,
-    marginBottom: 20,
     borderRadius: 10,
-    minHeight: 100
+    minHeight: 100,
+    margin: 10,
   },
   containerDark: {
     flex: 1,
@@ -63,7 +63,23 @@ const styles = (props) => StyleSheet.create({
     borderBottomColor: '#ff2801',
     borderRightColor: '#ff2801',
     padding: 15,
-    marginBottom: 20,
+    borderRadius: 10,
+    minHeight: 100,
+    margin: 10,
+  },
+  containerHomeLight: {
+    flex: 1,
+    backgroundColor: '#f2f2f2',
+    padding: 15,
+    margin: 10,
+    borderRadius: 10,
+    minHeight: 100
+  },
+  containerHomeDark: {
+    flex: 1,
+    backgroundColor: '#1a1a1a',
+    padding: 15,
+    margin: 10,
     borderRadius: 10,
     minHeight: 100
   },
@@ -75,9 +91,11 @@ const styles = (props) => StyleSheet.create({
   },
   textNextRace: {
     color: 'red',
+    marginLeft: 10
   },
   textLastRace: {
     color: 'green',
+    marginLeft: 10
   },
   titleDark: {
     color: 'white',
@@ -99,36 +117,6 @@ const styles = (props) => StyleSheet.create({
     width: 40,
     height: 40
   },
-  triangleCornerTopRightLight: {
-    width: 0,
-    height: 0,
-    backgroundColor: "transparent",
-    borderStyle: "solid",
-    borderRightWidth: 49,
-    borderTopWidth: 75,
-    borderRightColor: "transparent",
-    borderTopColor: '#f2f2f2',
-    position: 'absolute',
-    right: 0,
-    marginRight: 13,
-    marginTop: -11,
-    transform: [{ rotate: "270deg" }],
-  },
-  triangleCornerTopRightDark: {
-    width: 0,
-    height: 0,
-    backgroundColor: "transparent",
-    borderStyle: "solid",
-    borderRightWidth: 49,
-    borderTopWidth: 75,
-    borderRightColor: "transparent",
-    borderTopColor: '#1a1a1a',
-    position: 'absolute',
-    right: 0,
-    marginRight: 13,
-    marginTop: -11,
-    transform: [{ rotate: "270deg" }],
-  },
   inlineText: {
     display: "flex",
     flexDirection: "row",
@@ -138,9 +126,10 @@ const styles = (props) => StyleSheet.create({
   flag: {
     position: 'absolute',
     right: 0,
-    marginTop: -15,
-    marginRight: -3,
-    height: 80,
-    width: 80
+    marginRight: 10,
+    marginTop: 23,
+    height: 50,
+    width: 50,
+    borderRadius: 50 / 2,
   }
 });
